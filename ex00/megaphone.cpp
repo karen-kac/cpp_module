@@ -6,7 +6,7 @@
 /*   By: myokono <myokono@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 18:43:15 by myokono           #+#    #+#             */
-/*   Updated: 2025/03/07 18:43:20 by myokono          ###   ########.fr       */
+/*   Updated: 2025/04/08 23:54:48 by myokono          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int main(int argc, char **argv)
 		std::cout << "* LOUD AND UNBEARABLE FEEDBACK NOISE *" << std::endl;
 		return (0);
 	}
-
 	for (int i = 1; i < argc; i++)
 	{
 		std::string str = argv[i];

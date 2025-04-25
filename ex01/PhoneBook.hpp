@@ -1,40 +1,23 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   PhoneBook.hpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: myokono <myokono@student.42tokyo.jp>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/07 18:45:34 by myokono           #+#    #+#             */
-/*   Updated: 2025/03/07 18:46:47 by myokono          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef PHONEBOOK_HPP
-# define PHONEBOOK_HPP
+#define PHONEBOOK_HPP
 
 #include "Contact.hpp"
+#include <iomanip>
 
-class PhoneBook
-{
+class PhoneBook {
 private:
-	static const int MAX_CONTACTS = 8;
-	Contact contacts[MAX_CONTACTS];
-	int oldestIndex;
-	int count;
-	
-	std::string truncateString(const std::string &str) const;
-	void displayContactHeader() const;
-	void displayContactRow(int index, const Contact &contact) const;
-	void displayContactDetails(int index) const;
-	bool isValidIndex(const std::string &input, int &index) const;
+    Contact _contacts[8];
+    int     _count;      // 登録済み件数 (0〜8)
+    int     _oldest;     // 上書き対象インデックス (0〜7)
 
+    static std::string _truncate(const std::string &src);
+    void _printRow(int index, const Contact &c) const;
 public:
-	PhoneBook();
-	~PhoneBook();
-	
-	void addContact(const Contact &contact);
-	void searchContact() const;
+    PhoneBook();
+    ~PhoneBook();
+
+    void add();
+    void search() const;
 };
 
-#endif
+#endif // PHONEBOOK_HPP

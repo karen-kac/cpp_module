@@ -1,96 +1,75 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   PhoneBook.cpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: myokono <myokono@student.42tokyo.jp>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/07 18:45:31 by myokono           #+#    #+#             */
-/*   Updated: 2025/03/07 18:46:35 by myokono          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "PhoneBook.hpp"
-#include <iostream>
-#include <iomanip>
-#include <sstream>
+#include <cstdlib>
 
-PhoneBook::PhoneBook() : oldestIndex(0), count(0) {}
-
+PhoneBook::PhoneBook() : _count(0), _oldest(0) {}
 PhoneBook::~PhoneBook() {}
 
-void PhoneBook::addContact(const Contact &contact)
-{
-	contacts[oldestIndex] = contact;
-	oldestIndex = (oldestIndex + 1) % MAX_CONTACTS;
-	if (count < MAX_CONTACTS)
-		count++;
+/* 文字列を 10 文字幅に収める。長い場合は 9 文字 + '.' にする */
+std::string PhoneBook::_truncate(const std::string &src) {
+    if (src.length() > 10)
+        return src.substr(0, 9) + ".";
+    return src;
 }
 
-std::string PhoneBook::truncateString(const std::string &str) const
-{
-	if (str.length() > 10)
-		return str.substr(0, 9) + ".";
-	return str;
+void PhoneBook::_printRow(int index, const Contact &c) const {
+    std::cout << std::setw(10) << index << "|"
+              << std::setw(10) << _truncate(c.getFirstName()) << "|"
+              << std::setw(10) << _truncate(c.getLastName())  << "|"
+              << std::setw(10) << _truncate(c.getNickName())  << std::endl;
 }
 
-void PhoneBook::displayContactHeader() const
-{
-	std::cout << std::setw(10) << "Index" << "|";
-	std::cout << std::setw(10) << "First Name" << "|";
-	std::cout << std::setw(10) << "Last Name" << "|";
-	std::cout << std::setw(10) << "Nickname" << std::endl;
-	std::cout << std::string(43, '-') << std::endl;
+/* ユーティリティ: 空入力を防ぐ */
+static std::string _readField(const std::string &prompt) {
+    std::string input;
+    while (true) {
+        std::cout << prompt;
+        std::getline(std::cin, input);
+        if (std::cin.eof()) { std::cout << "\nEOF detected. Abort add." << std::endl; return ""; }
+        if (!input.empty())
+            return input;
+        std::cout << "Field cannot be empty. Please re‑enter." << std::endl;
+    }
 }
 
-void PhoneBook::displayContactRow(int index, const Contact &contact) const
-{
-	std::cout << std::setw(10) << index << "|";
-	std::cout << std::setw(10) << truncateString(contact.getFirstName()) << "|";
-	std::cout << std::setw(10) << truncateString(contact.getLastName()) << "|";
-	std::cout << std::setw(10) << truncateString(contact.getNickname()) << std::endl;
+void PhoneBook::add() {
+    Contact c;
+    std::string buf;
+
+    buf = _readField("First name      : "); if (buf.empty()) return; c.setFirstName(buf);
+    buf = _readField("Last name       : "); if (buf.empty()) return; c.setLastName(buf);
+    buf = _readField("Nickname        : "); if (buf.empty()) return; c.setNickName(buf);
+    buf = _readField("Phone number    : "); if (buf.empty()) return; c.setPhoneNumber(buf);
+    buf = _readField("Darkest secret  : "); if (buf.empty()) return; c.setDarkestSecret(buf);
+
+    _contacts[_oldest] = c;
+    _oldest = (_oldest + 1) % 8;
+    if (_count < 8) _count++;
+
+    std::cout << "Contact saved successfully!" << std::endl;
 }
 
-bool PhoneBook::isValidIndex(const std::string &input, int &index) const
-{
-	std::stringstream ss(input);
-	
-	if (!(ss >> index) || index < 0 || index >= count || !contacts[index].isEmpty())
-		return false;
-	return true;
-}
+void PhoneBook::search() const {
+    if (_count == 0) { std::cout << "PhoneBook is empty." << std::endl; return; }
 
-void PhoneBook::displayContactDetails(int index) const
-{
-	const Contact &contact = contacts[index];
-	
-	std::cout << "First Name: " << contact.getFirstName() << std::endl;
-	std::cout << "Last Name: " << contact.getLastName() << std::endl;
-	std::cout << "Nickname: " << contact.getNickname() << std::endl;
-	std::cout << "Phone Number: " << contact.getPhoneNumber() << std::endl;
-	std::cout << "Darkest Secret: " << contact.getDarkestSecret() << std::endl;
-}
+    std::cout << std::setw(10) << "Index" << "|"
+              << std::setw(10) << "First Name" << "|"
+              << std::setw(10) << "Last Name"  << "|"
+              << std::setw(10) << "Nickname"   << std::endl;
+    for (int i = 0; i < _count; ++i)
+        _printRow(i, _contacts[i]);
 
-void PhoneBook::searchContact() const
-{
-	if (count == 0)
-	{
-		std::cout << "Phonebook is empty." << std::endl;
-		return;
-	}
-	
-	displayContactHeader();
-	for (int i = 0; i < count; i++)
-		displayContactRow(i, contacts[i]);
-	
-	std::string input;
-	int index;
-	
-	std::cout << "Enter index to display: ";
-	std::getline(std::cin, input);
-	
-	if (isValidIndex(input, index))
-		displayContactDetails(index);
-	else
-		std::cout << "Invalid index." << std::endl;
+    std::cout << "Enter index to display > ";
+    std::string line; std::getline(std::cin, line);
+    if (std::cin.eof()) { std::cout << std::endl; return; }
+    int idx = std::atoi(line.c_str());
+    if (idx < 0 || idx >= _count) {
+        std::cout << "Invalid index." << std::endl;
+        return;
+    }
+    const Contact &c = _contacts[idx];
+    std::cout << "First name     : " << c.getFirstName()    << std::endl;
+    std::cout << "Last name      : " << c.getLastName()     << std::endl;
+    std::cout << "Nickname       : " << c.getNickName()     << std::endl;
+    std::cout << "Phone number   : " << c.getPhoneNumber()  << std::endl;
+    std::cout << "Darkest secret : " << c.getDarkestSecret()<< std::endl;
 }

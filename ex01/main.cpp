@@ -5,9 +5,8 @@ int main() {
 	PhoneBook book;
 	std::string cmd;
 
-	std::cout << "Welcome to My Awesome PhoneBook!" << std::endl;
 	while (true) {
-		std::cout << "\nEnter command (ADD | SEARCH | EXIT): ";
+		std::cout << "Enter command (ADD | SEARCH | EXIT): ";
 		if (!std::getline(std::cin, cmd)) {
 			std::cout << "\nEOF detected. Exiting." << std::endl;
 			break;

@@ -5,19 +5,20 @@
 #include <iomanip>
 
 class PhoneBook {
-private:
-    Contact _contacts[8];
-    int     _count;      // 登録済み件数 (0〜8)
-    int     _oldest;     // 上書き対象インデックス (0〜7)
-
-    static std::string _truncate(const std::string &src);
-    void _printRow(int index, const Contact &c) const;
-public:
-    PhoneBook();
-    ~PhoneBook();
-
-    void add();
-    void search() const;
-};
-
-#endif // PHONEBOOK_HPP
+	private:
+		Contact _contacts[8];
+		int	_count;
+		int	_oldest;
+	
+		static std::string _truncate(const std::string &src);
+		static std::string _readField(const std::string &prompt); // ← 追加
+		void _printRow(int index, const Contact &c) const;
+	public:
+		PhoneBook();
+		~PhoneBook();
+	
+		void add();
+		void search() const;
+	};
+	
+#endif

@@ -1,5 +1,4 @@
 #include "Fixed.hpp"
-#include "Fixed.hpp"
 
 Fixed::Fixed() : _rawBits(0)
 {

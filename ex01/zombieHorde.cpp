@@ -3,7 +3,7 @@
 
 Zombie* zombieHorde(int N, std::string name) {
 	if (N <= 0) {
-		std::cerr << "Error: Number of zombies must be positive" << std::endl;
+		std::cout << "Error: Number of zombies must be positive" << std::endl;
 		return NULL;
 	}
 

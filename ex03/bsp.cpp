@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   bsp.cpp                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: myokono <myokono@student.42tokyo.jp>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/22 14:24:55 by myokono           #+#    #+#             */
-/*   Updated: 2025/03/22 14:27:35 by myokono          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "Point.hpp"
 
 static Fixed area(Point const &a, Point const &b, Point const &c)
@@ -36,10 +24,9 @@ bool bsp(Point const a, Point const b, Point const c, Point const point)
 	if (areaPBC == Fixed(0) || areaPAC == Fixed(0) || areaPAB == Fixed(0))
 		return false;
 	
-	// Check if the sum of sub-triangle areas equals the original triangle area
-	// This accounts for floating-point precision issues by checking for a small difference
 	Fixed sumAreas = areaPBC + areaPAC + areaPAB;
-	
-	// If the sum of areas is equal to the original triangle's area, the point is inside
+	// Fixed epsilon = Fixed(0.0001f);
+	// if ((sumAreas - areaABC).abs() < epsilon)
+	// 	return true;
 	return (sumAreas == areaABC);
 }

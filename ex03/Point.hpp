@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Point.hpp                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: myokono <myokono@student.42tokyo.jp>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/22 14:25:21 by myokono           #+#    #+#             */
-/*   Updated: 2025/03/22 14:25:53 by myokono          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef POINT_HPP
 #define POINT_HPP
 
@@ -17,12 +5,12 @@
 
 class Point {
 private:
-	Fixed const x;
-	Fixed const y;
+	Fixed const _x;
+	Fixed const _y;
 
 public:
 	Point();
-	Point(const Point& src);
+	Point(const Point& other);
 	Point& operator=(const Point& rhs);
 	~Point();
 

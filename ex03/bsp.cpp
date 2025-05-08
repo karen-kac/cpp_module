@@ -21,12 +21,19 @@ bool bsp(Point const a, Point const b, Point const c, Point const point)
 	Fixed areaPAC = area(a, point, c);
 	Fixed areaPAB = area(a, b, point);
 
+	// std::cout << "areaPBC: " << areaPBC << std::endl;
+	// std::cout << "areaPAC: " << areaPAC << std::endl;
+	// std::cout << "areaPAB: " << areaPAB << std::endl;
 	if (areaPBC == Fixed(0) || areaPAC == Fixed(0) || areaPAB == Fixed(0))
 		return false;
-	
+
 	Fixed sumAreas = areaPBC + areaPAC + areaPAB;
-	// Fixed epsilon = Fixed(0.0001f);
-	// if ((sumAreas - areaABC).abs() < epsilon)
-	// 	return true;
-	return (sumAreas == areaABC);
+	// std::cout << "sumAreas: " << sumAreas << std::endl;
+	// std::cout << "areaABC: " << areaABC << std::endl;
+	Fixed epsilon = Fixed(0.01f);
+	// std::cout << "sumAreas - areaABC: " << sumAreas - areaABC << std::endl;
+	// std::cout << "epsilon: " << epsilon << std::endl;
+	if (sumAreas - areaABC < epsilon)
+		return true;
+	return false;
 }

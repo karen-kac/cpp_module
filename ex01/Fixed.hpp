@@ -1,30 +1,19 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Fixed.hpp                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: myokono <myokono@student.42tokyo.jp>       +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/22 14:13:20 by myokono           #+#    #+#             */
-/*   Updated: 2025/03/22 14:14:01 by myokono          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef FIXED_HPP
 #define FIXED_HPP
 
 #include <iostream>
+#include <cmath>
 
 class Fixed
 {
 private:
-	int _fixedPointValue;
+	int _rawBits;
 	static const int _fractionalBits = 8;
 
 public:
 	Fixed();
-	Fixed(const Fixed& src);
-	Fixed& operator=(const Fixed& rhs);
+	Fixed(const Fixed& other);
+	Fixed& operator=(const Fixed& src);
 	~Fixed();
 
 	Fixed(const int intValue);

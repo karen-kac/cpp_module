@@ -106,7 +106,7 @@ Fixed Fixed::operator/(const Fixed& rhs) const
 {
 
 	if (rhs._rawBits == 0) {
-		std::cerr << "Error: Division by zero" << std::endl;
+		std::cout << "Error: Division by zero" << std::endl;
 		return Fixed();
 	}
 

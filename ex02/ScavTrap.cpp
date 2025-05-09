@@ -21,7 +21,7 @@ ScavTrap::ScavTrap(const ScavTrap& other) : ClapTrap(other) {
 ScavTrap& ScavTrap::operator=(const ScavTrap& other) {
 	std::cout << "ScavTrap assignment operator called" << std::endl;
 	if (this != &other) {
-		ClapTrap::operator=(other); // 親クラスの代入演算子を呼ぶ
+		ClapTrap::operator=(other);
 	}
 	return *this;
 }

@@ -8,13 +8,12 @@ ClapTrap::ClapTrap(const std::string& name) : _name(name), _hitPoints(10), _ener
 	std::cout << "ClapTrap " << _name << " constructor called" << std::endl;
 }
 
-// Copy constructor
 ClapTrap::ClapTrap(const ClapTrap& other) {
 	std::cout << "ClapTrap copy constructor called" << std::endl;
-	*this = other;
+	if (this != &other)
+		*this = other;
 }
 
-// Copy assignment operator
 ClapTrap& ClapTrap::operator=(const ClapTrap& other) {
 	std::cout << "ClapTrap copy assignment operator called" << std::endl;
 	if (this != &other) {

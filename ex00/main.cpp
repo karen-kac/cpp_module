@@ -13,13 +13,13 @@ int main() {
 	for (int i = 0; i < 8; ++i) {
 		clap.attack("Energy Dummy");
 	}
-	clap.attack("Energy Dummy"); // Should show out of energy message
+	clap.attack("Energy Dummy");
 	
 	// Test destruction
 	std::cout << "\n--- Testing Destruction ---" << std::endl;
 	ClapTrap victim("Victim");
-	victim.takeDamage(15); // Should destroy the ClapTrap
-	victim.attack("Someone"); // Should fail because no hit points
+	victim.takeDamage(15);
+	victim.attack("Someone");
 	
 	return 0;
 }

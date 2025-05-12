@@ -5,7 +5,7 @@
 
 int main() {
 	std::cout << "=== Create Dog and Cat via Animal* ===" << std::endl;
-	// const Animal* meta = new Animal();
+	// const Animal* meta = new Animal(); // This will cause a compilation error
 	const Animal* dog = new Dog();
 	const Animal* cat = new Cat();
 

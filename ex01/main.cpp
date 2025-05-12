@@ -14,6 +14,15 @@ int main() {
 	Cat catC;
 	catC = catA;
 
+	std::cout << "\n=== Set ideas for Cat A ===" << std::endl;
+	catA.setIdea(0, "I want to play with a ball");
+	std::cout << "Cat A idea 0: " << catA.getIdea(0) << std::endl;
+	catA.setIdea(1, "I want to sleep");
+	std::cout << "Cat A idea 1: " << catA.getIdea(1) << std::endl;
+	catA.setIdea(2, "I want to eat fish");
+	std::cout << "Cat A idea 2: " << catA.getIdea(2) << std::endl;
+	
+
 	std::cout << "\n=== Create Dog X ===" << std::endl;
 	Dog dogX;
 

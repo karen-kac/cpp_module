@@ -1,4 +1,5 @@
 #include "Form.hpp"
+#include "Bureaucrat.hpp"
 
 Form::Form() : _name(""), _isSigned(false), _gradeToSign(1), _gradeToExecute(1)
 {
@@ -49,20 +50,23 @@ int Form::getGradeToExecute() const
 	return this->_gradeToExecute;
 }
 
-void Form::beSigned(const Bureaucrat &bureaucrat)
+int Form::beSigned(const Bureaucrat &bureaucrat)
 {
-	try {
+	if (this->_isSigned)
+	{
+		std::cout << this->_name << " is already signed" << std::endl;
+		return 1;
+	}
 	if (bureaucrat.getGrade() > this->_gradeToSign)
 		throw Form::GradeTooLowException();
 	this->_isSigned = true;
-	} catch (std::exception& e) {
-		std::cout << bureaucrat.getName() << " couldn’t sign " << this->getName()
-				  << " because " << e.what() << std::endl;
-	}
+	return 0;
 }
 
 std::ostream &operator<<(std::ostream &os, const Form &form)
 {
-	os << form.getName() << ", form grade to sign " << form.getGradeToSign() << ", form grade to execute " << form.getGradeToExecute();
+	os << form.getName() << ", form grade to sign " << form.getGradeToSign() 
+	   << ", form grade to execute " << form.getGradeToExecute()
+	   << ", signed: " << (form.getIsSigned() ? "yes" : "no");
 	return os;
 }

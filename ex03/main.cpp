@@ -3,116 +3,142 @@
 #include "ShrubberyCreationForm.hpp"
 #include "RobotomyRequestForm.hpp"
 #include "PresidentialPardonForm.hpp"
+#include "Intern.hpp"
 
 int main() {
-	std::cout << "===== Exercise 02: Concrete Forms =====\n" << std::endl;
+	std::cout << "===== Exercise 03: Intern =====\n" << std::endl;
 
-	// ビューロクラットの作成
 	try {
-		std::cout << "==== ビューロクラットの作成 ====" << std::endl;
-		Bureaucrat president("President", 1);        // すべて実行可能
-		Bureaucrat manager("Manager", 50);           // 一部実行可能
-		Bureaucrat intern("Intern", 150);            // 実行不可
-
-		std::cout << president << std::endl;
-		std::cout << manager << std::endl;
-		std::cout << intern << std::endl;
-
-		std::cout << "\n==== ShrubberyCreationForm テスト ====" << std::endl;
-		ShrubberyCreationForm shrub("garden");
-		std::cout << shrub << std::endl;
-
-		// 署名テスト (要求grade: 145)
-		std::cout << "\n--- Manager (grade 50) がShrub Formに署名 ---" << std::endl;
-		manager.signForm(shrub);
-
-		// 実行テスト (要求grade: 137)
-		std::cout << "\n--- Manager (grade 50) がShrub Formを実行 ---" << std::endl;
-		manager.executeForm(shrub);
-
-		std::cout << "\n--- Intern (grade 150) がShrub Formを実行しようとする ---" << std::endl;
-		intern.executeForm(shrub);
-
-		std::cout << "\n==== RobotomyRequestForm テスト ====" << std::endl;
-		RobotomyRequestForm robot("Bender");
-		std::cout << robot << std::endl;
-
-		// 署名テスト (要求grade: 72)
-		std::cout << "\n--- Manager (grade 50) がRobot Formに署名 ---" << std::endl;
-		manager.signForm(robot);
-
-		// 実行テスト (要求grade: 45)
-		std::cout << "\n--- Manager (grade 50) がRobot Formを実行 ---" << std::endl;
-		manager.executeForm(robot);
-
-		// 複数回実行してランダム性を確認
-		std::cout << "\n--- 再度Robot Formを実行（ランダム性確認） ---" << std::endl;
-		manager.executeForm(robot);
-
-		std::cout << "\n==== PresidentialPardonForm テスト ====" << std::endl;
-		PresidentialPardonForm pardon("Arthur Dent");
-		std::cout << pardon << std::endl;
-
-		// 署名テスト (要求grade: 25)
-		std::cout << "\n--- President (grade 1) がPardon Formに署名 ---" << std::endl;
-		president.signForm(pardon);
-
-		// 実行テスト (要求grade: 5)
-		std::cout << "\n--- President (grade 1) がPardon Formを実行 ---" << std::endl;
-		president.executeForm(pardon);
-
-		std::cout << "\n--- Manager (grade 50) がPardon Formを実行しようとする ---" << std::endl;
-		manager.executeForm(pardon);
-
-	} catch (std::exception& e) {
-		std::cerr << "Exception: " << e.what() << std::endl;
-	}
-
-	std::cout << "\n==== 未署名フォームの実行テスト ====" << std::endl;
-	try {
-		ShrubberyCreationForm unsignedForm("test");
-		Bureaucrat highGrade("HighGrade", 1);
-		
-		std::cout << "--- 未署名フォームの実行を試みる ---" << std::endl;
-		highGrade.executeForm(unsignedForm);
-	} catch (std::exception& e) {
-		std::cerr << "Exception: " << e.what() << std::endl;
-	}
-
-	std::cout << "\n==== グレード不足でのフォーム署名テスト ====" << std::endl;
-	try {
-		PresidentialPardonForm highLevelForm("VIP");
-		Bureaucrat lowGrade("LowGrade", 100);
-		
-		std::cout << "--- Grade 100のビューロクラットが Presidential Form (要求grade 25) に署名を試みる ---" << std::endl;
-		lowGrade.signForm(highLevelForm);
-	} catch (std::exception& e) {
-		std::cerr << "Exception: " << e.what() << std::endl;
-	}
-
-	std::cout << "\n==== ポリモーフィズムテスト ====" << std::endl;
-	try {
+		// インターンとビューロクラットの作成
+		std::cout << "==== インターンとビューロクラットの作成 ====" << std::endl;
+		Intern someRandomIntern;
 		Bureaucrat executor("Executor", 1);
-		
-		// AForm*配列でポリモーフィズムを確認
-		AForm* forms[3];
-		forms[0] = new ShrubberyCreationForm("poly_garden");
-		forms[1] = new RobotomyRequestForm("poly_robot");
-		forms[2] = new PresidentialPardonForm("poly_pardon");
+		std::cout << executor << std::endl;
 
-		for (int i = 0; i < 3; i++) {
-			std::cout << "\n--- Form " << i + 1 << ": " << forms[i]->getName() << " ---" << std::endl;
-			executor.signForm(*forms[i]);
-			executor.executeForm(*forms[i]);
+		std::cout << "\n==== 有効なフォーム作成テスト ====" << std::endl;
+		
+		// 1. Shrubbery Creation Form
+		std::cout << "\n--- Shrubbery Creation Form ---" << std::endl;
+		AForm* shrubberyForm = someRandomIntern.makeForm("shrubbery creation", "garden");
+		if (shrubberyForm) {
+			std::cout << *shrubberyForm << std::endl;
+			executor.signForm(*shrubberyForm);
+			executor.executeForm(*shrubberyForm);
+			delete shrubberyForm;
 		}
 
-		// メモリ解放
-		for (int i = 0; i < 3; i++) {
-			delete forms[i];
+		// 2. Robotomy Request Form (PDFの例に従う)
+		std::cout << "\n--- Robotomy Request Form ---" << std::endl;
+		AForm* rrf = someRandomIntern.makeForm("robotomy request", "Bender");
+		if (rrf) {
+			std::cout << *rrf << std::endl;
+			executor.signForm(*rrf);
+			executor.executeForm(*rrf);
+			delete rrf;
+		}
+
+		// 3. Presidential Pardon Form
+		std::cout << "\n--- Presidential Pardon Form ---" << std::endl;
+		AForm* pardonForm = someRandomIntern.makeForm("presidential pardon", "Arthur Dent");
+		if (pardonForm) {
+			std::cout << *pardonForm << std::endl;
+			executor.signForm(*pardonForm);
+			executor.executeForm(*pardonForm);
+			delete pardonForm;
+		}
+
+		std::cout << "\n==== 無効なフォーム名テスト ====" << std::endl;
+		
+		// 存在しないフォーム名
+		std::cout << "\n--- 存在しないフォーム名 ---" << std::endl;
+		AForm* invalidForm1 = someRandomIntern.makeForm("invalid form", "target");
+		if (invalidForm1) {
+			delete invalidForm1;  // このブロックは実行されないはず
+		}
+
+		// 似ているが正確でない名前
+		std::cout << "\n--- 似ているが正確でない名前 ---" << std::endl;
+		AForm* invalidForm2 = someRandomIntern.makeForm("Shrubbery Creation", "target"); // 大文字小文字違い
+		if (invalidForm2) {
+			delete invalidForm2;  // このブロックは実行されないはず
+		}
+
+		AForm* invalidForm3 = someRandomIntern.makeForm("robotomy", "target"); // 省略形
+		if (invalidForm3) {
+			delete invalidForm3;  // このブロックは実行されないはず
+		}
+
+		std::cout << "\n==== インターンの複数利用テスト ====" << std::endl;
+		
+		// 複数のインターンが同じフォームを作成
+		Intern intern1;
+		Intern intern2;
+		Intern intern3;
+
+		std::cout << "\n--- 複数インターンによる同一フォーム作成 ---" << std::endl;
+		AForm* form1 = intern1.makeForm("shrubbery creation", "office");
+		AForm* form2 = intern2.makeForm("robotomy request", "Employee");
+		AForm* form3 = intern3.makeForm("presidential pardon", "Citizen");
+
+		if (form1 && form2 && form3) {
+			std::cout << "All forms created successfully:" << std::endl;
+			std::cout << "- " << form1->getName() << " for " << static_cast<ShrubberyCreationForm*>(form1)->getTarget() << std::endl;
+			std::cout << "- " << form2->getName() << " for " << static_cast<RobotomyRequestForm*>(form2)->getTarget() << std::endl;
+			std::cout << "- " << form3->getName() << " for " << static_cast<PresidentialPardonForm*>(form3)->getTarget() << std::endl;
+			
+			delete form1;
+			delete form2;
+			delete form3;
+		}
+
+		std::cout << "\n==== インターンによるフォーム大量生産テスト ====" << std::endl;
+		
+		// 同じインターンが複数のフォームを作成
+		const int formCount = 6;
+		AForm* forms[formCount];
+		const char* formNames[] = {"shrubbery creation", "robotomy request", "presidential pardon"};
+		const char* targets[] = {"location1", "target1", "person1", "location2", "target2", "person2"};
+		
+		std::cout << "\n--- 6つのフォームを連続作成 ---" << std::endl;
+		for (int i = 0; i < formCount; i++) {
+			forms[i] = someRandomIntern.makeForm(formNames[i % 3], targets[i]);
+			if (forms[i]) {
+				std::cout << "Created: " << forms[i]->getName() << std::endl;
+			}
+		}
+
+		// 作成されたフォームをすべて実行
+		std::cout << "\n--- 作成されたフォームの一括実行 ---" << std::endl;
+		for (int i = 0; i < formCount; i++) {
+			if (forms[i]) {
+				executor.signForm(*forms[i]);
+				executor.executeForm(*forms[i]);
+				delete forms[i];
+				std::cout << "---" << std::endl;
+			}
 		}
 
 	} catch (std::exception& e) {
 		std::cerr << "Exception: " << e.what() << std::endl;
+	}
+
+	std::cout << "\n==== メモリ管理テスト ====" << std::endl;
+	
+	// NULLチェックの重要性を示す
+	try {
+		Intern testIntern;
+		AForm* nullForm = testIntern.makeForm("nonexistent", "target");
+		
+		std::cout << "--- NULL フォームの安全な処理 ---" << std::endl;
+		if (nullForm) {
+			std::cout << "Form created: " << nullForm->getName() << std::endl;
+			delete nullForm;
+		} else {
+			std::cout << "No form was created (NULL returned)" << std::endl;
+		}
+		
+	} catch (std::exception& e) {
+		std::cerr << "Exception in memory management test: " << e.what() << std::endl;
 	}
 
 	return 0;

@@ -34,14 +34,8 @@ const std::string &ShrubberyCreationForm::getTarget() const
 	return this->_target;
 }
 
-void ShrubberyCreationForm::execute(Bureaucrat const & executor) const
+void ShrubberyCreationForm::executeAction() const
 {
-
-	// 実行者のグレードが十分かチェック
-	if (executor.getGrade() > this->getGradeToExecute())
-		throw AForm::GradeTooLowException();
-
-	// ファイル作成と樹木の書き込み
 	std::string filename = this->_target + "_shrubbery";
 	std::ofstream file(filename.c_str());
 	
@@ -50,7 +44,6 @@ void ShrubberyCreationForm::execute(Bureaucrat const & executor) const
 		throw std::runtime_error("Could not create file");
 	}
 
-	// ASCII樹木を書き込み
 	file << "         v" << std::endl;
 	file << "        >X<" << std::endl;
 	file << "         A" << std::endl;

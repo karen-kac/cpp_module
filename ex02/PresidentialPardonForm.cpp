@@ -34,12 +34,7 @@ const std::string &PresidentialPardonForm::getTarget() const
 	return this->_target;
 }
 
-void PresidentialPardonForm::execute(Bureaucrat const & executor) const
+void PresidentialPardonForm::executeAction() const
 {
-	// 実行者のグレードが十分かチェック
-	if (executor.getGrade() > this->getGradeToExecute())
-		throw AForm::GradeTooLowException();
-
-	// 恩赦の通知
 	std::cout << this->_target << " has been pardoned by Zaphod Beeblebrox." << std::endl;
 }

@@ -57,6 +57,15 @@ void AForm::beSigned(const Bureaucrat &bureaucrat)
 	this->_isSigned = true;
 }
 
+void AForm::execute(const Bureaucrat &executor) const
+{
+	if (!this->getIsSigned())
+		throw AForm::FormNotSignedException();
+	if (executor.getGrade() > this->getGradeToExecute())
+		throw AForm::GradeTooLowException();
+	this->executeAction();
+}
+
 std::ostream &operator<<(std::ostream &os, const AForm &form)
 {
 	os << form.getName() << ", form grade to sign " << form.getGradeToSign() 

@@ -1,4 +1,4 @@
-NAME = 28bureaucrat
+NAME = aform
 
 CXX = c++
 

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 
+// 前方宣言
 class Form;
 
 class Bureaucrat
@@ -16,11 +17,17 @@ class Bureaucrat
 	public:
 		class GradeTooHighException : public std::exception {
 			public:
-				virtual const char* what() const throw() { return "Grade too high"; }
+				virtual const char* what() const throw()
+				{
+					return "Grade too high";
+				}
 		};
 		class GradeTooLowException : public std::exception {
 			public:
-				virtual const char* what() const throw() { return "Grade too low"; }
+				virtual const char* what() const throw()
+				{
+					return "Grade too low";
+				}
 		};
 
 		Bureaucrat();
@@ -35,6 +42,7 @@ class Bureaucrat
 		void incrementGrade();
 		void decrementGrade();
 
+		// この関数のみFormクラスを使用する（追加分）
 		void signForm(Form &form);
 };
 

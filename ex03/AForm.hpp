@@ -14,26 +14,48 @@ class AForm
 		bool _isSigned;
 		const int _gradeToSign;
 		const int _gradeToExecute;
+
+	// 純粋仮想関数
+	// テンプレートメソッドパターン（この部分だけ派生クラスで実装する）
 	protected:
 		virtual void executeAction() const = 0;
+	
+	// 公開メンバ関数
 	public:
 		class GradeTooHighException : public std::exception {
 			public:
-				virtual const char* what() const throw() { return "Grade too high"; }
+				virtual const char* what() const throw()
+				{
+					return "Grade too high";
+				}
 		};
 		class GradeTooLowException : public std::exception {
 			public:
-				virtual const char* what() const throw() { return "Grade too low"; }
+				virtual const char* what() const throw() 
+				{
+					return "Grade too low";
+				}
+		};
+		class AlreadySignedException : public std::exception {
+			public:
+			const char* what() const throw()
+			{
+				return "Form::Already signed";
+			}
 		};
 		class FormNotSignedException : public std::exception {
 			public:
-				virtual const char* what() const throw() { return "Form is not signed"; }
+				virtual const char* what() const throw()
+				{
+					return "Form is not signed";
+				}
 		};
 
 		AForm();
 		AForm(const std::string &name, int gradeToSign, int gradeToExecute);
 		AForm(const AForm &other);
 		AForm &operator=(const AForm &other);
+		// デストラクタは純粋仮想関数virtualはメモリ管理のため、=0は抽象クラスを表す
 		virtual ~AForm() = 0;
 
 		const std::string &getName() const;

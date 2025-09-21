@@ -16,11 +16,17 @@ class Bureaucrat
 	public:
 		class GradeTooHighException : public std::exception {
 			public:
-				virtual const char* what() const throw() { return "Grade too high"; }
+				virtual const char* what() const throw()
+				{
+					return "Grade too high";
+				}
 		};
 		class GradeTooLowException : public std::exception {
 			public:
-				virtual const char* what() const throw() { return "Grade too low"; }
+				virtual const char* what() const throw() 
+				{
+					return "Grade too low";
+				}
 		};
 
 		Bureaucrat();
@@ -35,6 +41,7 @@ class Bureaucrat
 		void incrementGrade();
 		void decrementGrade();
 
+		// この関数のみAFormクラスを使用する（追加分）
 		void signForm(AForm &form);
 		void executeForm(const AForm &form) const;
 };

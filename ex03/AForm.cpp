@@ -52,10 +52,13 @@ int AForm::getGradeToExecute() const
 
 void AForm::beSigned(const Bureaucrat &bureaucrat)
 {
+	if (this->_isSigned)
+		throw AForm::AlreadySignedException();
 	if (bureaucrat.getGrade() > this->_gradeToSign)
 		throw AForm::GradeTooLowException();
 	this->_isSigned = true;
 }
+
 
 void AForm::execute(const Bureaucrat &executor) const
 {

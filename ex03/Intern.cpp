@@ -1,72 +1,50 @@
 #include "Intern.hpp"
+#include <stdexcept>
 #include <iostream>
 
-Intern::Intern()
-{
-}
+// コンストラクタ/デストラクタ
+Intern::Intern() {}
+Intern::Intern(const Intern& other) { (void)other; }
+Intern& Intern::operator=(const Intern& other) { (void)other; return *this; }
+Intern::~Intern() {}
 
-Intern::Intern(const Intern& other)
-{
-	(void)other;
-}
-
-Intern& Intern::operator=(const Intern& other)
-{
-	(void)other;
-	return *this;
-}
-
-Intern::~Intern()
-{
-}
-
-AForm* Intern::createShrubberyCreationForm(const std::string& target) const
-{
+// --- 各フォーム生成関数
+static AForm* createShrubbery(const std::string& target) {
 	return new ShrubberyCreationForm(target);
 }
 
-AForm* Intern::createRobotomyRequestForm(const std::string& target) const
-{
+static AForm* createRobotomy(const std::string& target) {
 	return new RobotomyRequestForm(target);
 }
 
-AForm* Intern::createPresidentialPardonForm(const std::string& target) const
-{
+static AForm* createPresidential(const std::string& target) {
 	return new PresidentialPardonForm(target);
 }
 
-const Intern::FormInfo* Intern::getFormInfo()
+AForm* Intern::makeForm(const std::string& name, const std::string& target) const
 {
-	static const FormInfo formInfo[] = {
-		{"shrubbery creation", &Intern::createShrubberyCreationForm},
-		{"robotomy request", &Intern::createRobotomyRequestForm},
-		{"presidential pardon", &Intern::createPresidentialPardonForm}
+	static const int n = 3;
+	const std::string formNames[n] = {
+		"shrubbery creation",
+		"robotomy request",
+		"presidential pardon"
 	};
-	return formInfo;
-}
 
-int Intern::getFormCount()
-{
-	return 3;
-}
+	AForm* (*formCreators[n])(const std::string&) = {
+		&createShrubbery,
+		&createRobotomy,
+		&createPresidential
+	};
 
-AForm* Intern::makeForm(const std::string& formName, const std::string& target) const
-{
-	const FormInfo* forms = getFormInfo();
-	const int count = getFormCount();
-	
-	// フォーム名を検索
-	for (int i = 0; i < count; i++)
+	for (int i = 0; i < n; i++)
 	{
-		if (forms[i].name == formName)
+		if (name == formNames[i])
 		{
-			std::cout << "Intern creates " << formName << std::endl;
-			return (this->*(forms[i].creator))(target);
+			std::cout << "Intern creates " << name << std::endl;
+			return formCreators[i](target);
 		}
 	}
-	
-	// フォームが見つからない場合
-	std::cout << "Error: Intern cannot create '" << formName 
-	          << "' form because it doesn't exist" << std::endl;
-	return NULL;
+
+	// 不明なフォーム名の場合は例外を投げる
+	throw std::runtime_error("Intern: Unknown form name: " + name);
 }

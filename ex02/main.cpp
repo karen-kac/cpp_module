@@ -12,10 +12,12 @@ int main() {
 		std::cout << "==== ビューロクラットの作成 ====" << std::endl;
 		Bureaucrat president("President", 1);        // すべて実行可能
 		Bureaucrat manager("Manager", 50);           // 一部実行可能
+		Bureaucrat senior("Senior", 40);             // Robot Form実行可能
 		Bureaucrat intern("Intern", 150);            // 実行不可
 
 		std::cout << president << std::endl;
 		std::cout << manager << std::endl;
+		std::cout << senior << std::endl;
 		std::cout << intern << std::endl;
 
 		std::cout << "\n==== ShrubberyCreationForm テスト ====" << std::endl;
@@ -42,12 +44,12 @@ int main() {
 		manager.signForm(robot);
 
 		// 実行テスト (要求grade: 45)
-		std::cout << "\n--- Manager (grade 50) がRobot Formを実行 ---" << std::endl;
-		manager.executeForm(robot);
+		std::cout << "\n--- Senior (grade 40) がRobot Formを実行 ---" << std::endl;
+		senior.executeForm(robot);
 
 		// 複数回実行してランダム性を確認
 		std::cout << "\n--- 再度Robot Formを実行（ランダム性確認） ---" << std::endl;
-		manager.executeForm(robot);
+		senior.executeForm(robot);
 
 		std::cout << "\n==== PresidentialPardonForm テスト ====" << std::endl;
 		PresidentialPardonForm pardon("Arthur Dent");

@@ -1,137 +1,120 @@
 #include "ScalarConverter.hpp"
 #include <iostream>
-#include <cstdlib>      // atoi, strtod
-#include <cctype>       // isprint
-#include <climits>      // INT_MAX, INT_MIN
-#include <limits>       // numeric_limits
-#include <iomanip>      // setprecision
+#include <cstdlib>
+#include <cctype>
+#include <climits>
+#include <limits>
+#include <iomanip>
 #include <string>
 
-// private メンバの定義（インスタンス化禁止）
-ScalarConverter::ScalarConverter() {}
-ScalarConverter::ScalarConverter(const ScalarConverter& other) { (void)other; }
-ScalarConverter& ScalarConverter::operator=(const ScalarConverter& other) { (void)other; return *this; }
-ScalarConverter::~ScalarConverter() {}
-
-// --- ヘルパー構造体 --- //
-struct ScalarValues {
-	char cValue;
-	int iValue;
-	float fValue;
-	double dValue;
-};
-
-// --- 型判定用enum --- //
-enum LiteralType {
-	TYPE_CHAR,
-	TYPE_INT,
-	TYPE_FLOAT,
-	TYPE_DOUBLE,
-	TYPE_UNKNOWN
-};
-
-// --- 型判定関数 --- //
-static LiteralType detectType(const std::string &literal) {
-	if (literal.length() == 1 && !std::isdigit(literal[0]))
-		return TYPE_CHAR;
-	if (literal == "nan" || literal == "+inf" || literal == "-inf")
-		return TYPE_DOUBLE;
-	if (literal == "nanf" || literal == "+inff" || literal == "-inff")
-		return TYPE_FLOAT;
-	if (literal.find('f') != std::string::npos)
-		return TYPE_FLOAT;
-	if (literal.find('.') != std::string::npos)
-		return TYPE_DOUBLE;
-	return TYPE_INT;
+static bool isChar(const std::string& str) {
+	if (str.length() == 3 && str[0] == '\'' && str[2] == '\'')
+		return true;
+	if (str.length() == 1 && !std::isdigit(str[0]))
+		return true;
+	return false;
 }
 
-// --- 値変換関数 --- //
-static ScalarValues convertValues(const std::string &literal, LiteralType type) {
-	ScalarValues values = {0, 0, 0.0f, 0.0};
-	switch (type) {
-		case TYPE_CHAR:
-			values.cValue = literal[0];
-			values.iValue = static_cast<int>(values.cValue);
-			values.fValue = static_cast<float>(values.cValue);
-			values.dValue = static_cast<double>(values.cValue);
-			break;
-		case TYPE_INT:
-			values.dValue = std::strtod(literal.c_str(), NULL); // まず double で読む
-			values.fValue = static_cast<float>(values.dValue);
-		
-			if (values.dValue > INT_MAX || values.dValue < INT_MIN ||
-				values.dValue != values.dValue || // NaN check
-				values.dValue == std::numeric_limits<double>::infinity() ||
-				values.dValue == -std::numeric_limits<double>::infinity()) {
-				values.iValue = 0;  // ダミー
-				values.cValue = 0;
+static bool isFloatPseudo(const std::string& str) {
+	// 小文字と大文字両方に対応
+	return str == "-inff" || str == "+inff" || str == "nanf" ||
+	       str == "-infF" || str == "+infF" || str == "nanF";
+}
+
+static bool isDoublePseudo(const std::string& str) {
+	return str == "-inf" || str == "+inf" || str == "nan";
+}
+
+void ScalarConverter::convert(const std::string& literal)
+{
+	char    c = 0;
+	int     i = 0;
+	float   f = 0.0f;
+	double  d = 0.0;
+
+	try {
+		if (isChar(literal)) {
+			if (literal.length() == 1) {
+				c = literal[0];
 			} else {
-				values.iValue = static_cast<int>(values.dValue);
-				values.cValue = static_cast<char>(values.iValue);
+				c = literal[1];
 			}
-			break;	
-		case TYPE_FLOAT:
-			values.fValue = static_cast<float>(std::strtod(literal.c_str(), NULL));
-			values.iValue = static_cast<int>(values.fValue);
-			values.cValue = static_cast<char>(values.iValue);
-			values.dValue = static_cast<double>(values.fValue);
-			break;
-		case TYPE_DOUBLE:
-			values.dValue = std::strtod(literal.c_str(), NULL);
-			values.iValue = static_cast<int>(values.dValue);
-			values.cValue = static_cast<char>(values.iValue);
-			values.fValue = static_cast<float>(values.dValue);
-			break;
-		default:
-			break;
+			i = static_cast<int>(c);
+			f = static_cast<float>(c);
+			d = static_cast<double>(c);
+		}
+		else if (isFloatPseudo(literal)) {
+			f = static_cast<float>(std::strtod(literal.c_str(), NULL));
+			d = static_cast<double>(f);
+			i = 0;
+			c = 0;
+		} 
+		else if (isDoublePseudo(literal)) {
+			d = std::strtod(literal.c_str(), NULL);
+			f = static_cast<float>(d);
+			i = 0;
+			c = 0;
+		} 
+		else {
+			// --- 空文字列チェック ---
+			if (literal.empty()) {
+				std::cout << "char: impossible" << std::endl;
+				std::cout << "int: impossible" << std::endl;
+				std::cout << "float: impossible" << std::endl;
+				std::cout << "double: impossible" << std::endl;
+				return;
+			}
+			
+			// --- strtodで安全に数値変換 ---
+			char *end;
+			d = std::strtod(literal.c_str(), &end);
+			
+			// 何も変換されなかった場合（end が開始位置と同じ）もチェック
+			if (end == literal.c_str() || (*end != '\0' && !((*end == 'f' || *end == 'F') && *(end+1) == '\0'))) {
+				// 変換不可能
+				std::cout << "char: impossible" << std::endl;
+				std::cout << "int: impossible" << std::endl;
+				std::cout << "float: impossible" << std::endl;
+				std::cout << "double: impossible" << std::endl;
+				return;
+			}
+			f = static_cast<float>(d);
+			i = static_cast<int>(d);
+			c = static_cast<char>(i);
+		}
+
+		// --- 出力処理 ---
+
+		// char
+		std::cout << "char: ";
+		if (d != d || d == std::numeric_limits<double>::infinity()
+			|| d == -std::numeric_limits<double>::infinity()
+			|| d > UCHAR_MAX || d < 0)
+			std::cout << "impossible" << std::endl;
+		else if (std::isprint(c))
+			std::cout << "'" << c << "'" << std::endl;
+		else
+			std::cout << "Non displayable" << std::endl;
+
+		// int
+		std::cout << "int: ";
+		if (d != d || d == std::numeric_limits<double>::infinity()
+			|| d == -std::numeric_limits<double>::infinity()
+			|| d > INT_MAX || d < INT_MIN)
+			std::cout << "impossible" << std::endl;
+		else
+			std::cout << i << std::endl;
+
+		// float
+		std::cout << "float: " << std::fixed << std::setprecision(1) << f << "f" << std::endl;
+
+		// double
+		std::cout << "double: " << std::fixed << std::setprecision(1) << d << std::endl;
 	}
-	return values;
-}
-
-// --- 出力関数 --- //
-static void printValues(const ScalarValues &v) {
-	double d = v.dValue;
-	float  f = v.fValue;
-	int    i = v.iValue;
-	char   c = v.cValue;
-
-	bool isNan    = (d != d);
-	bool isPosInf = (d == std::numeric_limits<double>::infinity());
-	bool isNegInf = (d == -std::numeric_limits<double>::infinity());
-
-	// --- char ---
-	std::cout << "char: ";
-	if (isNan || isPosInf || isNegInf || d > UCHAR_MAX || d < 0)
-		std::cout << "impossible" << std::endl;
-	else if (std::isprint(c))
-		std::cout << "'" << c << "'" << std::endl;
-	else
-		std::cout << "Non displayable" << std::endl;
-
-	// --- int ---
-	std::cout << "int: ";
-	if (isNan || isPosInf || isNegInf || d > INT_MAX || d < INT_MIN)
-		std::cout << "impossible" << std::endl;
-	else
-		std::cout << i << std::endl;
-
-	// --- float ---
-	std::cout << "float: "
-			  << std::fixed << std::setprecision(1) << f << "f" << std::endl;
-
-	// --- double ---
-	std::cout << "double: "
-			  << std::fixed << std::setprecision(1) << d << std::endl;
-}
-
-
-// --- ScalarConverter本体 --- //
-void ScalarConverter::convert(const std::string &literal) {
-	LiteralType type = detectType(literal);
-	if (type == TYPE_UNKNOWN) {
-		std::cerr << "Error: Unknown literal type" << std::endl;
-		return;
+	catch(...) {
+		std::cout << "char: impossible" << std::endl;
+		std::cout << "int: impossible" << std::endl;
+		std::cout << "float: impossible" << std::endl;
+		std::cout << "double: impossible" << std::endl;
 	}
-	ScalarValues values = convertValues(literal, type);
-	printValues(values);
 }

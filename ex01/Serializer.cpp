@@ -1,6 +1,7 @@
 #include "Serializer.hpp"
 
 // Data* → uintptr_t
+// serializeはビット列をそのまま別の型として返す
 uintptr_t Serializer::serialize(Data* ptr) {
 	return reinterpret_cast<uintptr_t>(ptr);
 }

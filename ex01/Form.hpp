@@ -18,24 +18,15 @@ class Form
 	public:
 		class GradeTooHighException : public std::exception {
 			public:
-				const char* what() const throw()
-				{ 
-					return "Grade too high";
-				}
+				const char* what() const throw();
 		};
 		class GradeTooLowException : public std::exception {
 			public:
-				const char* what() const throw()
-				{ 
-					return "Grade too low"; 
-				}
+				const char* what() const throw();
 		};
 		class AlreadySignedException : public std::exception {
 			public:
-			const char* what() const throw()
-			{
-				return "Form::Already signed";
-			}
+			const char* what() const throw();
 		};
 		Form();
 		Form(const std::string &name, int gradeToSign, int gradeToExecute);

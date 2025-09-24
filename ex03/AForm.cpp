@@ -1,6 +1,26 @@
 #include "AForm.hpp"
 #include "Bureaucrat.hpp"
 
+const char* AForm::GradeTooHighException::what() const throw()
+{
+	return "Grade too high";
+}
+
+const char* AForm::GradeTooLowException::what() const throw()
+{
+	return "Grade too low";
+}
+
+const char* AForm::AlreadySignedException::what() const throw()
+{
+	return "Form::Already signed";
+}
+
+const char* AForm::FormNotSignedException::what() const throw()
+{
+	return "Form is not signed";
+}
+
 AForm::AForm() : _name(""), _isSigned(false), _gradeToSign(1), _gradeToExecute(1)
 {
 }

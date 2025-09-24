@@ -16,15 +16,11 @@ class Bureaucrat
 	// std::exceptionを継承して、what()をオーバーライドする
 		class GradeTooHighException : public std::exception {
 			public:
-				const char* what() const throw() {
-					return "Grade too high"; 
-				}
+				const char* what() const throw();
 		};
 		class GradeTooLowException : public std::exception {
 			public:
-				const char* what() const throw() {
-					return "Grade too low"; 
-				}
+				const char* what() const throw();
 		};
 
 		// コンストラクタ、コピーコンストラクタ、代入演算子、デストラクタ

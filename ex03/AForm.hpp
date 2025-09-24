@@ -24,31 +24,19 @@ class AForm
 	public:
 		class GradeTooHighException : public std::exception {
 			public:
-				virtual const char* what() const throw()
-				{
-					return "Grade too high";
-				}
+				virtual const char* what() const throw();
 		};
 		class GradeTooLowException : public std::exception {
 			public:
-				virtual const char* what() const throw() 
-				{
-					return "Grade too low";
-				}
+				virtual const char* what() const throw(); 
 		};
 		class AlreadySignedException : public std::exception {
 			public:
-			const char* what() const throw()
-			{
-				return "Form::Already signed";
-			}
+			const char* what() const throw();
 		};
 		class FormNotSignedException : public std::exception {
 			public:
-				virtual const char* what() const throw()
-				{
-					return "Form is not signed";
-				}
+				virtual const char* what() const throw();
 		};
 
 		AForm();

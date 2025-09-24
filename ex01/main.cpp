@@ -49,6 +49,7 @@ int main() {
 		Bureaucrat topBureaucrat("TopBureaucrat", 1);
 		Bureaucrat lowBureaucrat("LowBureaucrat", 150);
 		Form strictForm("StrictForm", 1, 1);
+		Form strictForm2("StrictForm2", 1, 1);
 		Form easyForm("EasyForm", 150, 150);
 
 		std::cout << "\n--- Top bureaucrat (grade 1) が strict form (要求grade 1) に署名 ---" << std::endl;
@@ -57,8 +58,8 @@ int main() {
 		std::cout << "\n--- Low bureaucrat (grade 150) が easy form (要求grade 150) に署名 ---" << std::endl;
 		lowBureaucrat.signForm(easyForm);
 
-		std::cout << "\n--- Low bureaucrat (grade 150) が strict form (要求grade 1) に署名を試みる ---" << std::endl;
-		lowBureaucrat.signForm(strictForm);  // 失敗
+		std::cout << "\n--- Low bureaucrat (grade 150) が strict form2 (要求grade 1) に署名を試みる ---" << std::endl;
+		lowBureaucrat.signForm(strictForm2);  // 失敗
 
 	} catch (std::exception& e) {
 		std::cerr << "Exception: " << e.what() << std::endl;

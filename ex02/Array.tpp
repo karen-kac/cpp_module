@@ -15,7 +15,7 @@ Array<T>::Array(unsigned int n) : _elements(NULL), _size(n) {
 template<typename T> 
 Array<T>::Array(const Array& other) : _elements(NULL), _size(other._size) {
 	if (_size > 0) {
-		_elements = new T[_size]();  // デフォルト初期化を明示
+		_elements = new T[_size]();
 		for (unsigned int i = 0; i < _size; i++) {
 			_elements[i] = other._elements[i];
 		}
@@ -50,7 +50,7 @@ Array<T>::~Array() {
 template<typename T>
 T& Array<T>::operator[](unsigned int index) {
 	if (index >= _size) {
-		throw OutOfBoundsException();
+		throw std::exception();
 	}
 	return _elements[index];
 }
@@ -58,7 +58,7 @@ T& Array<T>::operator[](unsigned int index) {
 template<typename T>
 const T& Array<T>::operator[](unsigned int index) const {
 	if (index >= _size) {
-		throw OutOfBoundsException();
+		throw std::exception();
 	}
 	return _elements[index];
 }

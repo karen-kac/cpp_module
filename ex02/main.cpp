@@ -57,7 +57,7 @@ void testIntArray() {
 		std::cout << intArray[10] << std::endl;  // 例外が投げられるはず
 		
 	} catch (const std::exception& e) {
-		std::cout << "例外を捕捉: " << e.what() << std::endl;
+		std::cout << "例外: " << e.what() << std::endl;
 	}
 }
 
@@ -91,7 +91,7 @@ void testStringArray() {
 		std::cout << "const参照でのアクセス: " << constRef[1] << std::endl;
 		
 	} catch (const std::exception& e) {
-		std::cout << "例外を捕捉: " << e.what() << std::endl;
+		std::cout << "例外: " << e.what() << std::endl;
 	}
 }
 
@@ -107,7 +107,7 @@ void testEmptyArray() {
 		std::cout << emptyArray[0] << std::endl;
 		
 	} catch (const std::exception& e) {
-		std::cout << "例外を捕捉: " << e.what() << std::endl;
+		std::cout << "例外: " << e.what() << std::endl;
 	}
 }
 

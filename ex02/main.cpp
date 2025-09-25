@@ -5,7 +5,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
-#include <exception>  // std::bad_cast用（C++98対応）
+#include <exception>  // std::exception用
 
 // ランダムにA, B, Cを生成
 Base* generate(void) {
@@ -51,7 +51,7 @@ void identify(Base& p) {
 		(void)a;  // unused variable warning回避
 		std::cout << "A" << std::endl;
 		return;
-	} catch (const std::bad_cast&) {
+	} catch (const std::exception&) {
 		// Aではない、次を試す
 	}
 
@@ -60,7 +60,7 @@ void identify(Base& p) {
 		(void)b;  // unused variable warning回避
 		std::cout << "B" << std::endl;
 		return;
-	} catch (const std::bad_cast&) {
+	} catch (const std::exception&) {
 		// Bではない、次を試す
 	}
 
@@ -69,7 +69,7 @@ void identify(Base& p) {
 		(void)c;  // unused variable warning回避
 		std::cout << "C" << std::endl;
 		return;
-	} catch (const std::bad_cast&) {
+	} catch (const std::exception&) {
 		// Cでもない
 	}
 

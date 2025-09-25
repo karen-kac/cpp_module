@@ -13,9 +13,9 @@ int main() {
 	std::cout << "number: " << data.number << std::endl;
 
 	// serialize
-	uintptr_t raw = Serializer::serialize(&data);
+	unsigned long raw = Serializer::serialize(&data);
 	std::cout << "\n=== After serialize ===" << std::endl;
-	std::cout << "raw (uintptr_t): " << raw << std::endl;
+	std::cout << "raw (unsigned long): " << raw << std::endl;
 
 	// deserialize
 	Data* restored = Serializer::deserialize(raw);

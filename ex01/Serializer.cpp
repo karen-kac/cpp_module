@@ -1,12 +1,12 @@
 #include "Serializer.hpp"
 
-// Data* → uintptr_t
+// Data* → unsigned long
 // serializeはビット列をそのまま別の型として返す
-uintptr_t Serializer::serialize(Data* ptr) {
-	return reinterpret_cast<uintptr_t>(ptr);
+unsigned long Serializer::serialize(Data* ptr) {
+	return reinterpret_cast<unsigned long>(ptr);
 }
 
-// uintptr_t → Data*
-Data* Serializer::deserialize(uintptr_t raw) {
+// unsigned long → Data*
+Data* Serializer::deserialize(unsigned long raw) {
 	return reinterpret_cast<Data*>(raw);
 }

@@ -1,7 +1,6 @@
 #ifndef SERIALIZER_HPP
 #define SERIALIZER_HPP
 
-#include <cstdint>
 #include <string>
 
 // データ構造体
@@ -19,8 +18,10 @@ private:
 	~Serializer();
 
 public:
-	static uintptr_t serialize(Data* ptr);
-	static Data* deserialize(uintptr_t raw);
+	// C++98では uintptr_t が標準化されていないため unsigned long を使用
+	// 64bit環境では size_t や unsigned long long も考慮が必要
+	static unsigned long serialize(Data* ptr);
+	static Data* deserialize(unsigned long raw);
 };
 
 #endif

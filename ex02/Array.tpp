@@ -8,14 +8,14 @@ Array<T>::Array() : _elements(NULL), _size(0) {
 template<typename T>
 Array<T>::Array(unsigned int n) : _elements(NULL), _size(n) {
 	if (n > 0) {
-		_elements = new T[n]();  // () でデフォルト値に初期化
+		_elements = new T[n]();
 	}
 }
 
-template<typename T>
+template<typename T> 
 Array<T>::Array(const Array& other) : _elements(NULL), _size(other._size) {
 	if (_size > 0) {
-		_elements = new T[_size];
+		_elements = new T[_size]();  // デフォルト初期化を明示
 		for (unsigned int i = 0; i < _size; i++) {
 			_elements[i] = other._elements[i];
 		}

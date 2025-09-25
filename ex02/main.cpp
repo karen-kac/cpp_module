@@ -6,8 +6,8 @@
 #include <cstdlib>
 #include <ctime>
 
+// ランダムにA, B, Cを生成
 Base* generate(void) {
-	// Initialize random seed once
 	static bool seeded = false;
 	if (!seeded) {
 		std::srand(static_cast<unsigned int>(std::time(0)));
@@ -28,7 +28,8 @@ Base* generate(void) {
 	}
 }
 
-// Prints the actual type of the object pointed to by p
+// 実際の型を出力　
+// 失敗するとnullptrを返す
 void identify(Base* p) {
 	if (dynamic_cast<A*>(p)) {
 		std::cout << "A" << std::endl;
@@ -41,34 +42,31 @@ void identify(Base* p) {
 	}
 }
 
-// Prints the actual type of the object referenced by p
-// Using a pointer inside this function is forbidden
+// 実際の型を出力
+// 失敗すると例外を投げる
 void identify(Base& p) {
 	try {
 		A& a = dynamic_cast<A&>(p);
-		(void)a; // Suppress unused variable warning
+		(void)a;
 		std::cout << "A" << std::endl;
 		return;
 	} catch (const std::bad_cast&) {
-		// Not type A, continue checking
 	}
 
 	try {
 		B& b = dynamic_cast<B&>(p);
-		(void)b; // Suppress unused variable warning
+		(void)b;
 		std::cout << "B" << std::endl;
 		return;
 	} catch (const std::bad_cast&) {
-		// Not type B, continue checking
 	}
 
 	try {
 		C& c = dynamic_cast<C&>(p);
-		(void)c; // Suppress unused variable warning
+		(void)c;
 		std::cout << "C" << std::endl;
 		return;
 	} catch (const std::bad_cast&) {
-		// Not type C
 	}
 
 	std::cout << "Unknown type" << std::endl;
@@ -77,28 +75,26 @@ void identify(Base& p) {
 int main() {
 	std::cout << "=== Exercise 02: Identify real type ===" << std::endl;
 
-	// Test multiple times to see random generation
+	// 複数回テスト
 	for (int i = 0; i < 5; ++i) {
 		std::cout << "\n--- Test " << (i + 1) << " ---" << std::endl;
 		
-		// Generate random object
 		Base* obj = generate();
-		
-		// Test identify with pointer
+
 		std::cout << "identify(Base* p): ";
 		identify(obj);
 		
-		// Test identify with reference
+		// 参照でテスト
 		std::cout << "identify(Base& p): ";
 		identify(*obj);
 		
-		// Clean up memory
+		// メモリを解放
 		delete obj;
 	}
 
 	std::cout << "\n=== Additional Tests ===" << std::endl;
 	
-	// Test each type explicitly
+	// 各型を明示的にテスト
 	std::cout << "\nExplicit A test:" << std::endl;
 	Base* a = new A();
 	std::cout << "identify(A* as Base*): ";

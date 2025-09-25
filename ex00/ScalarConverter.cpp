@@ -15,13 +15,13 @@ static bool isChar(const std::string& str) {
 	return false;
 }
 
-static bool isFloatPseudo(const std::string& str) {
+static bool isFloatSpecial(const std::string& str) {
 	// 小文字と大文字両方に対応
 	return str == "-inff" || str == "+inff" || str == "nanf" ||
 	       str == "-infF" || str == "+infF" || str == "nanF";
 }
 
-static bool isDoublePseudo(const std::string& str) {
+static bool isDoubleSpecial(const std::string& str) {
 	return str == "-inf" || str == "+inf" || str == "nan";
 }
 
@@ -43,13 +43,13 @@ void ScalarConverter::convert(const std::string& literal)
 			f = static_cast<float>(c);
 			d = static_cast<double>(c);
 		}
-		else if (isFloatPseudo(literal)) {
+		else if (isFloatSpecial(literal)) {
 			f = static_cast<float>(std::strtod(literal.c_str(), NULL));
 			d = static_cast<double>(f);
 			i = 0;
 			c = 0;
 		} 
-		else if (isDoublePseudo(literal)) {
+		else if (isDoubleSpecial(literal)) {
 			d = std::strtod(literal.c_str(), NULL);
 			f = static_cast<float>(d);
 			i = 0;

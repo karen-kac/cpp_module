@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <exception>  // std::bad_cast用（C++98対応）
 
 // ランダムにA, B, Cを生成
 Base* generate(void) {
@@ -28,8 +29,8 @@ Base* generate(void) {
 	}
 }
 
-// 実際の型を出力　
-// 失敗するとnullptrを返す
+// 実際の型を出力（ポインタ版）
+// 失敗するとNULLを返す
 void identify(Base* p) {
 	if (dynamic_cast<A*>(p)) {
 		std::cout << "A" << std::endl;
@@ -42,31 +43,34 @@ void identify(Base* p) {
 	}
 }
 
-// 実際の型を出力
+// 実際の型を出力（参照版）
 // 失敗すると例外を投げる
 void identify(Base& p) {
 	try {
 		A& a = dynamic_cast<A&>(p);
-		(void)a;
+		(void)a;  // unused variable warning回避
 		std::cout << "A" << std::endl;
 		return;
 	} catch (const std::bad_cast&) {
+		// Aではない、次を試す
 	}
 
 	try {
 		B& b = dynamic_cast<B&>(p);
-		(void)b;
+		(void)b;  // unused variable warning回避
 		std::cout << "B" << std::endl;
 		return;
 	} catch (const std::bad_cast&) {
+		// Bではない、次を試す
 	}
 
 	try {
 		C& c = dynamic_cast<C&>(p);
-		(void)c;
+		(void)c;  // unused variable warning回避
 		std::cout << "C" << std::endl;
 		return;
 	} catch (const std::bad_cast&) {
+		// Cでもない
 	}
 
 	std::cout << "Unknown type" << std::endl;

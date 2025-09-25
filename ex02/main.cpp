@@ -6,8 +6,6 @@
 #include <cstdlib>
 #include <ctime>
 
-
-
 Base* generate(void) {
 	// Initialize random seed once
 	static bool seeded = false;
@@ -47,7 +45,8 @@ void identify(Base* p) {
 // Using a pointer inside this function is forbidden
 void identify(Base& p) {
 	try {
-		dynamic_cast<A&>(p);
+		A& a = dynamic_cast<A&>(p);
+		(void)a; // Suppress unused variable warning
 		std::cout << "A" << std::endl;
 		return;
 	} catch (const std::bad_cast&) {
@@ -55,7 +54,8 @@ void identify(Base& p) {
 	}
 
 	try {
-		dynamic_cast<B&>(p);
+		B& b = dynamic_cast<B&>(p);
+		(void)b; // Suppress unused variable warning
 		std::cout << "B" << std::endl;
 		return;
 	} catch (const std::bad_cast&) {
@@ -63,7 +63,8 @@ void identify(Base& p) {
 	}
 
 	try {
-		dynamic_cast<C&>(p);
+		C& c = dynamic_cast<C&>(p);
+		(void)c; // Suppress unused variable warning
 		std::cout << "C" << std::endl;
 		return;
 	} catch (const std::bad_cast&) {

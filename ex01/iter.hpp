@@ -6,7 +6,7 @@
 // 非const配列の時
 template<typename T, typename Func>
 void iter(T* array, std::size_t length, Func func) {
-	for (size_t i = 0; i < length; i++) {
+	for (std::size_t i = 0; i < length; i++) {
 		func(array[i]);
 	}
 }
@@ -14,7 +14,7 @@ void iter(T* array, std::size_t length, Func func) {
 // const配列の時
 template<typename T, typename Func>
 void iter(const T* array, std::size_t length, Func func) {
-	for (size_t i = 0; i < length; i++) {
+	for (std::size_t i = 0; i < length; i++) {
 		func(array[i]);
 	}
 }

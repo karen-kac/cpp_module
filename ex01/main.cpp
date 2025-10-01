@@ -3,6 +3,8 @@
 #include <vector>
 #include <ctime>
 #include <cstdlib>
+#include <list>
+#include <deque>
 
 int main()
 {
@@ -115,8 +117,65 @@ int main()
 		std::cerr << "Exception: " << e.what() << std::endl;
 	}
 
+	std::cout << "\n=== listからのaddRangeテスト ===" << std::endl;
+	try
+	{
+		std::list<int> lst;
+		for (int i = 0; i < 5; ++i)
+			lst.push_back(i * 10);
+
+		Span listSpan(5);
+		listSpan.addRange(lst.begin(), lst.end());
+		std::cout << "Added " << listSpan.size() << " elements from list" << std::endl;
+		std::cout << "Shortest span: " << listSpan.shortestSpan() << std::endl;
+		std::cout << "Longest span: " << listSpan.longestSpan() << std::endl;
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "Exception: " << e.what() << std::endl;
+	}
+
+	std::cout << "\n=== dequeからのaddRangeテスト ===" << std::endl;
+	try
+	{
+		std::deque<int> deq;
+		for (int i = 0; i < 7; ++i)
+			deq.push_back(i * 3);
+
+		Span dequeSpan(7);
+		dequeSpan.addRange(deq.begin(), deq.end());
+		std::cout << "Added " << dequeSpan.size() << " elements from deque" << std::endl;
+		std::cout << "Shortest span: " << dequeSpan.shortestSpan() << std::endl;
+		std::cout << "Longest span: " << dequeSpan.longestSpan() << std::endl;
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "Exception: " << e.what() << std::endl;
+	}
+
+	std::cout << "\n=== ちょうど_maxSizeに到達するaddRangeテスト ===" << std::endl;
+	try
+	{
+		Span exact(10);
+		std::vector<int> firstHalf(5, 1);   // 1を5個
+		std::vector<int> secondHalf(5, 2); // 2を5個
+
+		exact.addRange(firstHalf.begin(), firstHalf.end());   // 5個追加
+		exact.addRange(secondHalf.begin(), secondHalf.end()); // 残り5個追加（合計10）
+
+		std::cout << "Successfully filled exact capacity: " << exact.size() 
+		          << " / " << exact.getMaxSize() << std::endl;
+		std::cout << "Shortest span: " << exact.shortestSpan() << std::endl;
+		std::cout << "Longest span: " << exact.longestSpan() << std::endl;
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << "Exception: " << e.what() << std::endl;
+	}
+
+
 	return 0;
 }
 
 
-// additional flag : -pedantic
+// additional flag : 

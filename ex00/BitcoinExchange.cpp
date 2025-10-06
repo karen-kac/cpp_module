@@ -17,7 +17,7 @@ void BitcoinExchange::loadDatabase(const std::string& filename) {
 	std::string line;
 	std::getline(file, line); // 1行目ヘッダをスキップ
 	while (std::getline(file, line)) {
-		std::stringstream ss(line);
+		std::stringstream ss(line); // stringstreamを使用するのはカンマで分割するため
 		std::string date, rateStr;
 		if (std::getline(ss, date, ',') && std::getline(ss, rateStr)) {
 			double rate = atof(rateStr.c_str());
@@ -36,6 +36,13 @@ void BitcoinExchange::processInput(const std::string& filename) const {
 
 	std::string line;
 	std::getline(file, line); // ヘッダをスキップ
+	
+	// ファイルが空の場合のチェック
+	if (file.eof()) {
+		std::cerr << "Error: input file is empty." << std::endl;
+		return;
+	}
+	
 	while (std::getline(file, line)) {
 		std::stringstream ss(line);
 		std::string date, valueStr;
@@ -74,7 +81,8 @@ void BitcoinExchange::processInput(const std::string& filename) const {
 
 // 日付フォーマット確認
 bool BitcoinExchange::isValidDate(const std::string& date) const {
-	if (date.size() != 10 || date[4] != '-' || date[7] != '-') return false;
+	if (date.size() != 10 || date[4] != '-' || date[7] != '-')
+		return false;
 	return true;
 }
 
@@ -99,7 +107,7 @@ bool BitcoinExchange::isValidValue(const std::string& valueStr, double& value) c
 
 // 日付に対応するレートを取得
 double BitcoinExchange::getRateForDate(const std::string& date) const {
-	std::map<std::string, double>::const_iterator it = _rates.lower_bound(date);
+	std::map<std::string, double>::const_iterator it = _rates.lower_bound(date); // lower_boundはdateより大きい最初の要素を返す
 	if (it == _rates.end()) {
 		--it; // 一番近い過去の日付
 	} else if (it->first != date) {

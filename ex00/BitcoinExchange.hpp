@@ -10,7 +10,7 @@
 class BitcoinExchange {
 private:
 	std::map<std::string, double> _rates; // 日付 → レート
-
+	// mapはキーが昇順に並んでいるので、日付に対応するレートを取得するときにlower_boundを使う
 public:
 	BitcoinExchange();
 	BitcoinExchange(const BitcoinExchange& other);

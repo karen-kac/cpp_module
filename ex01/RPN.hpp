@@ -8,6 +8,10 @@
 #include <stdexcept>
 
 class RPN {
+private:
+	bool isOperator(const std::string& token) const;
+	int applyOperation(int a, int b, const std::string& op) const;
+
 public:
 	RPN();
 	RPN(const RPN& other);
@@ -15,10 +19,6 @@ public:
 	~RPN();
 
 	int evaluate(const std::string& expression);
-
-private:
-	bool isOperator(const std::string& token) const;
-	int applyOperation(int a, int b, const std::string& op) const;
 };
 
 #endif

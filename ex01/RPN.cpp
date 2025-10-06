@@ -14,7 +14,8 @@ int RPN::applyOperation(int a, int b, const std::string& op) const {
 	if (op == "-") return a - b;
 	if (op == "*") return a * b;
 	if (op == "/") {
-		if (b == 0) throw std::runtime_error("Error");
+		if (b == 0)
+			throw std::runtime_error("Error");
 		return a / b;
 	}
 	throw std::runtime_error("Error");
@@ -27,9 +28,12 @@ int RPN::evaluate(const std::string& expression) {
 
 	while (ss >> token) {
 		if (isOperator(token)) {
-			if (st.size() < 2) throw std::runtime_error("Error");
-			int b = st.top(); st.pop();
-			int a = st.top(); st.pop();
+			if (st.size() < 2)
+				throw std::runtime_error("Error");
+			int b = st.top();
+			st.pop();
+			int a = st.top();
+			st.pop();
 			int result = applyOperation(a, b, token);
 			st.push(result);
 		} else {
@@ -41,6 +45,7 @@ int RPN::evaluate(const std::string& expression) {
 		}
 	}
 
-	if (st.size() != 1) throw std::runtime_error("Error");
+	if (st.size() != 1)
+		throw std::runtime_error("Error");
 	return st.top();
 }

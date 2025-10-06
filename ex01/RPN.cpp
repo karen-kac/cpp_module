@@ -22,11 +22,11 @@ int RPN::applyOperation(int a, int b, const std::string& op) const {
 }
 
 int RPN::evaluate(const std::string& expression) {
-	std::stack<int> st;
+	std::stack<int> st; // スタックを使用するのは、後ろから順に処理するため
 	std::stringstream ss(expression);
 	std::string token;
 
-	while (ss >> token) {
+	while (ss >> token) {	// トークンごとに処理
 		if (isOperator(token)) {
 			if (st.size() < 2)
 				throw std::runtime_error("Error");
@@ -38,7 +38,7 @@ int RPN::evaluate(const std::string& expression) {
 			st.push(result);
 		} else {
 			// 数字トークンのチェック
-			if (token.size() != 1 || !isdigit(token[0]))
+			if (token.size() != 1 || !isdigit(token[0])) // 数字トークンのチェック
 				throw std::runtime_error("Error");
 			int value = token[0] - '0';
 			st.push(value);

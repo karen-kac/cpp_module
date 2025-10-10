@@ -78,17 +78,19 @@ bool PmergeMe::load_container(char **argv) {
 }
 
 // Print
-void PmergeMe::print_elapsed_time() const {
-	double elapsed_time = static_cast<double>(_end - _start) / CLOCKS_PER_SEC * 1e6;
-	std::cout	<< "Time to process a range of " << vector_container.size()
-				<< " elements : " 
-				<< std::fixed << std::setprecision(6) << elapsed_time
-				<< " us" << std::endl;
+void PmergeMe::print_elapsed_time(const char* container_label, size_t num_elements) const {
+    double elapsed_time = static_cast<double>(_end - _start) / CLOCKS_PER_SEC * 1e6;
+    std::cout
+        << "Time to process a range of "
+        << std::setw(6) << num_elements
+        << " elements with " << container_label << " : "
+        << std::fixed << std::setprecision(5) << elapsed_time
+        << " us" << std::endl;
 }
 
 void PmergeMe::print_elements() const {
 	size_t count = 0;
-	size_t max = 21;
+	size_t max = 5;
 	for (std::vector<int>::const_iterator it = vector_container.begin(); it != vector_container.end() && count < max; ++it, ++count) {
 		std::cout << (count ? " " : "") << *it;
 	}
@@ -98,7 +100,7 @@ void PmergeMe::print_elements() const {
 
 void PmergeMe::print_deque_elements() const {
 	size_t count = 0;
-	size_t max = 21;
+	size_t max = 5;
 	for (std::deque<int>::const_iterator it = deque_container.begin(); it != deque_container.end() && count < max; ++it, ++count) {
 		std::cout << (count ? " " : "") << *it;
 	}
@@ -538,21 +540,26 @@ void PmergeMe::sort_ford_johnson_deque() {
 }
 
 void PmergeMe::run() {
-	std::cout << "Before: ";
-	print_elements();
-	// ベクター版のソートと計測
+    std::cout << "Before: ";
+    print_elements();
 
-	std::cout << "\n=== Vector ===" << std::endl;
-	sort_ford_johnson_vector();
-	std::cout << "After: ";
-	print_elements();
-	print_elapsed_time();
-	std::cout << "比較回数 : " << _count << std::endl;
-	// デック版のソートと計測
-	std::cout << "\n=== Deque ===" << std::endl;
-	sort_ford_johnson_deque();
-	std::cout << "After: ";
-	print_deque_elements();
-	print_elapsed_time();
-	std::cout << "比較回数 : " << _count << std::endl;
+    // Vector のソートと計測
+    sort_ford_johnson_vector();
+    std::cout << "After:  ";
+    print_elements();
+    print_elapsed_time("std::vector", vector_container.size());
+#ifdef SHOW_COMPARE_COUNT
+    std::cout << "比較回数 : " << _count << std::endl;
+#endif
+
+    // Deque のソートと計測
+    sort_ford_johnson_deque();
+    std::cout << "After:  ";
+    print_deque_elements();
+    print_elapsed_time("std::deque", deque_container.size());
+#ifdef SHOW_COMPARE_COUNT
+    std::cout << "比較回数 : " << _count << std::endl;
+#endif
 }
+
+// CXXFLAGSなどで-DSHOW_COMPARE_COUNTを指定すると、比較回数を表示する。

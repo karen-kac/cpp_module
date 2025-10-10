@@ -18,7 +18,7 @@ private:
 	bool parseInt(char* s, int& out) const;
 	void print_elements() const;
 	void print_deque_elements() const;
-	void print_elapsed_time() const;
+	void print_elapsed_time(const char* container_label, size_t num_elements) const;
 	void sort_ford_johnson_vector();
 	void sort_ford_johnson_deque();
 	bool load_container(char **argv);

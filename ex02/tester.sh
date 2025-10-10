@@ -144,7 +144,40 @@ run_block() {
   fi
 }
 
-# --- 重複ケースセクション ---
+# --- 固定入力用: 1回分の実行（重複含む） ---
+run_one_fixed() {
+  local section="$1"; shift
+  local -a nums; nums=( "$@" )
+
+  local out
+  out=$(PMERGE_DEBUG= "$bin" ${nums[@]} 2>&1)
+
+  local after_line arr
+  after_line=$(print -r -- "$out" | extract_after_line "$section")
+  arr=( ${(z)after_line} )
+  if [[ ${#arr[@]} -gt 0 && ${arr[1]} == "After:" ]]; then
+    arr=( ${arr[@]:1} )
+  fi
+  if [[ ${#arr[@]} -gt 0 && ${arr[-1]} == "[...]" ]]; then
+    arr=( ${arr[@]:0:-1} )
+  fi
+
+  if ! is_sorted_non_decreasing ${arr[@]}; then
+    echo "1 0"
+    return
+  fi
+
+  local cmp
+  cmp=$(print -r -- "$out" | extract_cmp "$section")
+  if [[ -z "$cmp" ]]; then
+    echo "3 0"
+    return
+  fi
+
+  echo "0 $cmp"
+}
+
+# --- 重複ケースセクション（ランダムと同じ出力形式） ---
 run_fixed_cases() {
   local section="$1"
   print "\n${BOLD}=== 重複を含む固定ケース [$section] ===${RESET}"
@@ -158,14 +191,45 @@ run_fixed_cases() {
     "1 2 2 3 3 4 4 5 5"
   )
 
-  for nums in "${cases[@]}"; do
-    printf "${YELLOW}Input:${RESET} %s\n" "$nums"
-    PMERGE_DEBUG= "$bin" $nums 2>&1 | awk -v sec="$section" '
-      $0 ~ "=== "sec" ===" {show=1}
-      show && /^After:/ {print; next}
-      show && /比較回数/ {print; show=0}
-    '
-    print "----"
+  for nums_str in "${cases[@]}"; do
+    local -a nums; nums=( ${(z)nums_str} )
+    local n; n=${#nums[@]}
+    local cap="${F[$n]}"
+
+    printf "${BOLD}n=%d${RESET} [%s] cmp vs F(n)=${BOLD}%d${RESET}: " "$n" "$section" "$cap"
+
+    typeset -a cmps; cmps=()
+    local per_fail=0
+
+    read stat cmp < <(run_one_fixed "$section" ${nums[@]})
+    if [[ "$stat" == "0" ]]; then
+      printf "${GREEN}%2d${RESET} " "$cmp"
+      cmps+="$cmp"
+    elif [[ "$stat" == "1" ]]; then
+      printf "${RED}S!${RESET} "
+      (( per_fail++ ))
+    elif [[ "$stat" == "2" ]]; then
+      printf "${RED}C!%s${RESET} " "$cmp"
+      cmps+="$cmp"
+      (( per_fail++ ))
+    else
+      printf "${YELLOW}??${RESET} "
+      (( per_fail++ ))
+    fi
+
+    if (( ${#cmps[@]} > 0 )); then
+      local sum=0 min=${cmps[1]} max=${cmps[1]}
+      for v in "${cmps[@]}"; do
+        (( sum += v ))
+        (( v < min )) && min="$v"
+        (( v > max )) && max="$v"
+      done
+      local avg
+      avg=$(print -l -- $sum $#{cmps} | awk 'NR==1{s=$1} NR==2{n=$1} END{printf("%.2f", s/n)}')
+      printf "${GRAY}[min=%d avg=%s max=%d fails=%d]${RESET}\n" "$min" "$avg" "$max" "$per_fail"
+    else
+      printf "${GRAY}[no-cmp fails=%d]${RESET}\n" "$per_fail"
+    fi
   done
 }
 

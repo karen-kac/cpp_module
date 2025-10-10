@@ -83,6 +83,34 @@ void BitcoinExchange::processInput(const std::string& filename) const {
 bool BitcoinExchange::isValidDate(const std::string& date) const {
 	if (date.size() != 10 || date[4] != '-' || date[7] != '-')
 		return false;
+	
+	// 年、月、日の各桁が数字かチェック
+	for (int i = 0; i < 10; i++) {
+		if (i == 4 || i == 7) continue;
+		if (!std::isdigit(date[i])) return false;
+	}
+	
+	// 年、月、日を抽出
+	int year = std::atoi(date.substr(0, 4).c_str());
+	int month = std::atoi(date.substr(5, 2).c_str());
+	int day = std::atoi(date.substr(8, 2).c_str());
+	
+	// 月の範囲チェック
+	if (month < 1 || month > 12) return false;
+	
+	// 日の範囲チェック（簡易版）
+	if (day < 1 || day > 31) return false;
+	
+	// より厳密には各月の日数チェックも必要
+	static const int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+	int max_day = days_in_month[month - 1];
+	
+	// うるう年のチェック
+	if (month == 2 && ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0))
+		max_day = 29;
+	
+	if (day > max_day) return false;
+	
 	return true;
 }
 

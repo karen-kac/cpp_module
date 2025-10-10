@@ -6,6 +6,7 @@
 #include <sstream>
 #include <map>
 #include <string>
+#include <cstdlib>
 
 class BitcoinExchange {
 private:

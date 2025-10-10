@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
 		PmergeMe p(argc, argv);
 		p.run();
 	} catch (const std::exception& e) {
-		std::cerr << "Error : " << e.what() << "\n";
+		std::cerr << e.what() << "\n";
 		return 1;
 	}
 	return 0;

@@ -4,6 +4,7 @@
 #   1) Vector / Deque の出力が昇順か
 #   2) 比較回数 ≤ 画像表の理論値 F(n)
 # を確認し、各 n ごとに横一列で色付き表示します。
+# さらに、重複を含む固定入力ケースも別途テスト。
 
 set -u
 
@@ -26,7 +27,7 @@ F[6]=10  F[7]=13  F[8]=16  F[9]=19  F[10]=22  F[11]=26
 F[12]=30 F[13]=34 F[14]=38 F[15]=42 F[16]=46 F[17]=50
 F[18]=54 F[19]=58 F[20]=62 F[21]=66
 
-# ANSI colors (printfで使える通常のエスケープに修正)
+# ANSI colors
 GREEN=$'\e[32m'
 RED=$'\e[31m'
 YELLOW=$'\e[33m'
@@ -34,7 +35,7 @@ GRAY=$'\e[90m'
 BOLD=$'\e[1m'
 RESET=$'\e[0m'
 
-# 指定セクション（"Vector" または "Deque"）の After 行を取得
+# --- 抽出ユーティリティ関数 ---
 extract_after_line() {
   awk -v sec="$1" '
     BEGIN{show=0}
@@ -43,7 +44,6 @@ extract_after_line() {
   '
 }
 
-# 指定セクションの「比較回数 : X」を取得
 extract_cmp() {
   awk -v sec="$1" '
     BEGIN{show=0}
@@ -63,11 +63,9 @@ is_sorted_non_decreasing() {
   return 0
 }
 
-# 1ケース実行（section="Vector"|"Deque"）→ "status cmp" を返す
-# status: 0=OK, 1=sorted NG, 2=cmp 超過, 3=cmp 取れず
+# --- ランダムケース ---
 run_one() {
   local n="$1" section="$2"
-  # 一意な乱数 n 個（BSD系）
   local nums
   nums=( $(jot 100000 1 | sort -R | head -n "$n") )
 
@@ -104,12 +102,10 @@ run_one() {
   fi
 }
 
-# 1セクション（Vector/Deque）分を横並び表示
 run_block() {
   local n="$1" section="$2"
   local cap="${F[$n]}"
 
-  # 見出し（例: n=7 [Vector] F(n)=13:）
   printf "${BOLD}n=%d${RESET} [%s] cmp vs F(n)=${BOLD}%d${RESET}: " "$n" "$section" "$cap"
 
   typeset -a cmps; cmps=()
@@ -148,9 +144,38 @@ run_block() {
   fi
 }
 
-# 本体: n=1..21 各20回（Vector → Deque の順に 2 行表示）
+# --- 重複ケースセクション ---
+run_fixed_cases() {
+  local section="$1"
+  print "\n${BOLD}=== 重複を含む固定ケース [$section] ===${RESET}"
+
+  local -a cases=(
+    "1 1"
+    "2 2 2"
+    "1 3 3 5"
+    "5 5 4 4 3 3"
+    "10 10 9 9 8 8 7 7"
+    "1 2 2 3 3 4 4 5 5"
+  )
+
+  for nums in "${cases[@]}"; do
+    printf "${YELLOW}Input:${RESET} %s\n" "$nums"
+    PMERGE_DEBUG= "$bin" $nums 2>&1 | awk -v sec="$section" '
+      $0 ~ "=== "sec" ===" {show=1}
+      show && /^After:/ {print; next}
+      show && /比較回数/ {print; show=0}
+    '
+    print "----"
+  done
+}
+
+# --- 本体 ---
 for n in {1..21}; do
   run_block "$n" "Vector"
   run_block "$n" "Deque"
   print "＊＊＊＊＊＊"
 done
+
+# --- 重複テスト ---
+run_fixed_cases "Vector"
+run_fixed_cases "Deque"
